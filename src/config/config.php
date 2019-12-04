@@ -14,6 +14,7 @@ return [
         'table' => 'runtime_config', //Table name when using database driving drivers
         'provider' => '', // instance of StorageInterface for custom driver
         // KnightAR\Laravel\Config\Adapters\Db::class,
+        'model' => 'KnightAR\Laravel\Config\Models\RunetimeConfig' //Model to use, in case you need to extend the eloquent model
     ],
 
     /**

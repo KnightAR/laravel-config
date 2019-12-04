@@ -1,11 +1,14 @@
 <?php
 
-namespace KnightAR\Laravel\Config;
+namespace KnightAR\Laravel\Config\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use KnightAR\Laravel\Config\Traits\BindsDynamically;
 
 /**
  * RunetimeConfig
+ *
+ * Override this model if you wish to use things like Spiritix/LadaCache or OwenIt/Auditing Packages
  *
  * @property int       $id
  * @property string    $key
@@ -16,7 +19,7 @@ use KnightAR\Laravel\Config\Traits\BindsDynamically;
  * @method static \Illuminate\Database\Eloquent\Builder|RunetimeConfig query()
  * @mixin \Eloquent
  */
-class RunetimeConfig extends BaseModel
+class RunetimeConfig extends Model
 {
     use BindsDynamically;
 

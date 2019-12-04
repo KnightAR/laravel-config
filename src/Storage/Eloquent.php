@@ -2,7 +2,8 @@
 
 namespace KnightAR\Laravel\Config\Storage;
 
-use KnightAR\Laravel\Config\RunetimeConfig;
+use Illuminate\Support\Collection;
+use KnightAR\Laravel\Config\Models\RunetimeConfig;
 
 /**
  * Eloquent storage for config
@@ -12,15 +13,35 @@ use KnightAR\Laravel\Config\RunetimeConfig;
 class Eloquent implements StorageInterface
 {
     /**
+     * @var string model to use
+     */
+    protected $model;
+
+    /**
+     * constructor
+     *
+     * @param string $file the file to persist the data two
+     */
+    public function __construct($model)
+    {
+        $this->model = $model;
+    }
+
+    /**
      * @inheritdoc
      */
     public function save($key, $value)
     {
-        $this->delKey($key);
-
         if (is_array($value)) {
+            /** @var Collection $existing_keys */
+            $existing_keys = $this->model::whereRaw('key LIKE ?[%]', $key);
+
             foreach ($value as $i => $arrValue) {
+                $existing_keys = $existing_keys->where('key', '!=', $key.'['.$i.']');
                 $this->saveKey($key.'['.$i.']', $arrValue);
+            }
+            if ($existing_keys->count() > 0) {
+                $existing_keys->delete();
             }
             return;
         }
@@ -44,7 +65,7 @@ class Eloquent implements StorageInterface
      */
     private function saveKey($key, $value)
     {
-        return RunetimeConfig::updateOrCreate($key, $value);
+        return $this->model::updateOrCreate(['key' => $key], ['value' => $value]);
     }
 
     /**
@@ -53,7 +74,7 @@ class Eloquent implements StorageInterface
     public function load()
     {
         $results = [];
-        foreach (RunetimeConfig::all() as $row) {
+        foreach ($this->model::all() as $row) {
             $results[$row->key] = $row->value;
         }
         return $results;
@@ -64,7 +85,7 @@ class Eloquent implements StorageInterface
      */
     public function clear()
     {
-        RunetimeConfig::truncate();
+        $this->model::truncate();
     }
 
     /**
@@ -74,6 +95,6 @@ class Eloquent implements StorageInterface
      */
     private function delKey($key)
     {
-        RunetimeConfig::where('key', $key)->delete();
+        $this->model::where('key', $key)->delete();
     }
 }

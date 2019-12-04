@@ -109,7 +109,9 @@ class Config implements Repository
         $default = self::$config->get($key);
 
         if ($default !== $value) {
-            return $this->set($key, $value);
+            if ($value !== $this->get($key)) {
+                return $this->set($key, $value);
+            }
         } elseif ($this->has($key) && $default === $value) {
             return $this->forget($key);
         }

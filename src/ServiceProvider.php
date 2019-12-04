@@ -34,8 +34,15 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/migrations/' => database_path('migrations'),
         ], 'migrations');
 
-        foreach(app()->make('config-runtime')->all() as $parent => $values) {
-            $this->mergeAndOverwriteConfigFromArray($parent, $values);
+        try {
+            foreach (app()->make('config-runtime')->all() as $parent => $values) {
+                $this->mergeAndOverwriteConfigFromArray($parent, $values);
+            }
+        } catch(\Exception $e) {
+            //This is to prevent boot errors when the migrations have yet to run
+            \Log::warning("Failure in config runetime", [
+                'Exception' => $e
+            ]);
         }
     }
 
@@ -154,6 +161,7 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function selectStorageEloquent($config)
     {
-        return new Eloquent();
+        $model = $config->get('runtimeconfig.storage.model') ?? 'KnightAR\Laravel\Config\Models\RunetimeConfig';
+        return new Eloquent($model);
     }
 }

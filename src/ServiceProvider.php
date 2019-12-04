@@ -2,6 +2,7 @@
 
 namespace KnightAR\Laravel\Config;
 
+use KnightAR\Laravel\Config\Storage\Eloquent;
 use KnightAR\Laravel\Config\Storage\File;
 use KnightAR\Laravel\Config\Storage\Pdo;
 use KnightAR\Laravel\Config\Storage\Redis;
@@ -17,6 +18,7 @@ use Illuminate\Support\ServiceProvider as BaseServiceProvider;
 class ServiceProvider extends BaseServiceProvider
 {
     protected $defer = false;
+    protected $config;
 
     /**
      * @inheritdoc
@@ -31,6 +33,15 @@ class ServiceProvider extends BaseServiceProvider
         $this->publishes([
             __DIR__.'/migrations/' => database_path('migrations'),
         ], 'migrations');
+
+        foreach(app()->make('config-runtime')->all() as $parent => $values) {
+            $this->mergeAndOverwriteConfigFromArray($parent, $values);
+        }
+    }
+
+    public function mergeAndOverwriteConfigFromArray($key, $values) {
+        $config = $this->app['config']->get($key, []);
+        $this->app['config']->set($key, array_replace_recursive($config, $values));
     }
 
     /**
@@ -38,6 +49,8 @@ class ServiceProvider extends BaseServiceProvider
      */
     public function register()
     {
+        $configPath = __DIR__ . '/config/config.php';
+        $this->mergeConfigFrom($configPath, 'runtimeconfig');
         $this->app->singleton('config-runtime', function () {
             $storage = $this->selectStorage($this->app['config']);
             if ($storage === null) {
@@ -90,8 +103,9 @@ class ServiceProvider extends BaseServiceProvider
      */
     protected function selectStoragePdo($config)
     {
+        $table = $config->get('runtimeconfig.storage.table');
         $connection = $config->get('runtimeconfig.storage.connection');
-        $table = $this->app['db']->getTablePrefix() . 'runtime_config';
+        $table = $this->app['db']->getTablePrefix() . $table;
         $pdo = $this->app['db']->connection($connection)->getPdo();
         return new Pdo($pdo, $table);
     }
@@ -130,5 +144,16 @@ class ServiceProvider extends BaseServiceProvider
     {
         $path = $config->get('runtimeconfig.storage.path');
         return new File($path);
+    }
+
+    /**
+     * Get an instance of the File storage engine
+     *
+     * @param  LaravelConfig $config
+     * @return File
+     */
+    protected function selectStorageEloquent($config)
+    {
+        return new Eloquent();
     }
 }

@@ -16,7 +16,8 @@ class CreateRuntimeConfigTable extends Migration
      */
     public function up()
     {
-        Schema::create('runtime_config', function (Blueprint $table) {
+        $table = \Config::get('runtimeconfig.storage.table') ?? 'runtime_config';
+        Schema::create($table, function (Blueprint $table) {
             $table->increments('id');
             $table->string('key');
             $table->longText('value');
@@ -32,6 +33,7 @@ class CreateRuntimeConfigTable extends Migration
      */
     public function down()
     {
-        Schema::drop('runtime_config');
+        $table = \Config::get('runtimeconfig.storage.table') ?? 'runtime_config';
+        Schema::drop($table);
     }
 }

@@ -45,6 +45,11 @@ class Config implements Repository
     private $storage;
 
     /**
+     * @var \Illuminate\Config\Repository
+     */
+    private static $config;
+
+    /**
      * constructor
      * The initial data
      *
@@ -53,6 +58,11 @@ class Config implements Repository
      */
     public function __construct($data = [], Arr $arrHelper = null)
     {
+        //Make a copy of the untouched config before we continue
+        if (is_null(self::$config)) {
+            self::$config = new \Illuminate\Config\Repository(app('config')->all());
+        }
+
         $this->setArrHelper($arrHelper);
 
         // test $data is valid
@@ -69,6 +79,40 @@ class Config implements Repository
 
         $this->data = $this->dataDecode($data);
         $this->modifiers = new Collection;
+    }
+
+    /**
+     * Return the default app config on construct
+     *
+     * @return \Illuminate\Config\Repository
+     */
+    public function getAppConfig() {
+        return self::$config;
+    }
+
+    /**
+     * Create/Update a configuration value only if different from default app config (the key has to exist in the default config)
+     *
+     * @param string $key
+     * @param mixed $value
+     */
+    public function setOnlyChanged($key, $value = null) {
+        if ($this->has($key) && (is_null($value) || empty($value))) {
+            return $this->forget($key);
+        }
+        if (!self::$config->has($key)) {
+            if ($this->has($key)) {
+                return $this->forget($key);
+            }
+            return;
+        }
+        $default = self::$config->get($key);
+
+        if ($default !== $value) {
+            return $this->set($key, $value);
+        } elseif ($this->has($key) && $default === $value) {
+            return $this->forget($key);
+        }
     }
 
     /**

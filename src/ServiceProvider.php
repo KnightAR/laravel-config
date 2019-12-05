@@ -34,17 +34,15 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/migrations/' => database_path('migrations'),
         ], 'migrations');
 
-        if (function_exists('app')) {
-            try {
-                foreach (app('config')->all() as $parent => $values) {
-                    $this->mergeAndOverwriteConfigFromArray($parent, $values);
-                }
-            } catch (\Exception $e) {
-                //This is to prevent boot errors when the migrations have yet to run
-                \Log::warning("Failure in config runetime", [
-                    'Exception' => $e
-                ]);
+        try {
+            foreach (app('config-runtime')->all() as $parent => $values) {
+                $this->mergeAndOverwriteConfigFromArray($parent, $values);
             }
+        } catch (\Exception $e) {
+            //This is to prevent boot errors when the migrations have yet to run
+            \Log::warning("Failure in config runetime", [
+                'Exception' => $e
+            ]);
         }
     }
 

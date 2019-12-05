@@ -59,8 +59,8 @@ class Config implements Repository
     public function __construct($data = [], Arr $arrHelper = null)
     {
         //Make a copy of the untouched config before we continue
-        if (is_null(self::$config) && function_exists('app')) {
-            self::$config = app('config')->all();
+        if (is_null(self::$config)) {
+            self::$config = clone app('config');
         }
 
         $this->setArrHelper($arrHelper);
@@ -95,6 +95,7 @@ class Config implements Repository
      *
      * @param string $key
      * @param mixed $value
+     * @return bool
      */
     public function setOnlyChanged($key, $value = null) {
         if ($this->has($key) && (is_null($value) || empty($value))) {
@@ -104,13 +105,13 @@ class Config implements Repository
             if ($this->has($key)) {
                 return $this->forget($key);
             }
-            return;
+            return true;
         }
         $default = self::$config->get($key);
 
         if ($default !== $value) {
             if ($value !== $this->get($key)) {
-                return $this->set($key, $value);
+                $this->set($key, $value);
             }
         } elseif ($this->has($key) && $default === $value) {
             return $this->forget($key);
@@ -181,8 +182,8 @@ class Config implements Repository
     }
 
     /***
-      * Get all of the configuration data in it's hierarchical state
-      */
+     * Get all of the configuration data in it's hierarchical state
+     */
     public function all()
     {
         return $this->data;

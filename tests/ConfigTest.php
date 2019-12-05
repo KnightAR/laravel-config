@@ -1,11 +1,13 @@
 <?php
 
+namespace KnightAR\Laravel\Config\Tests;
+
 use KnightAR\Laravel\Config\Config;
 
 /**
  * Tests for Config class
  */
-class ConfigTest extends PHPUnit_Framework_TestCase
+class ConfigTest extends TestCase
 {
     private $data = [
         'fooo' => 'bar',

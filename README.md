@@ -1,6 +1,6 @@
 # Laravel Config
 
-[![Build Status](https://travis-ci.org/knightar/laravel-config.svg?branch=feature%2F1-setup-build-environment&format=flat-square)](https://travis-ci.org/knightar/laravel-config)
+[![Build Status](https://travis-ci.org/KnightAR/laravel-config.svg?branch=master&format=flat-square)](https://travis-ci.org/knightar/laravel-config)
 [![Total Downloads](https://poser.pugx.org/knightar/laravel-config/d/total.svg?format=flat-square)](https://packagist.org/packages/knightar/laravel-config)
 [![Latest Stable Version](https://poser.pugx.org/knightar/laravel-config/v/stable.svg?format=flat-square)](https://packagist.org/packages/knightar/laravel-config)
 [![Latest Unstable Version](https://poser.pugx.org/knightar/laravel-config/v/unstable.svg?format=flat-square)](https://packagist.org/packages/knightar/laravel-config)

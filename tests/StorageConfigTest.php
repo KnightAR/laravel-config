@@ -1,20 +1,28 @@
 <?php
 
+namespace KnightAR\Laravel\Config\Tests;
+
 use KnightAR\Laravel\Config\Config;
 use KnightAR\Laravel\Config\Storage\File;
 
 /**
  * Tests for Persisting Config class
  */
-class StorageConfigTest extends PHPUnit_Framework_TestCase
+class StorageConfigTest extends TestCase
 {
     private $sampleFile = 'assets/sample.json';
     private $sampleWrite = 'assets/write.json';
 
-    public function setUp()
+    /**
+     *
+     * @throws \Exception
+     */
+    public function setUp(): void
     {
+        parent::setUp();
+
         if (!is_writable(__DIR__.'/assets')) {
-            throw Exception('Test case unable to write to assets dir');
+            throw new \Exception('Test case unable to write to assets dir');
         }
 
         $this->sampleFile = __DIR__.'/'.$this->sampleFile;

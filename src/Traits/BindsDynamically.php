@@ -13,6 +13,9 @@ trait BindsDynamically
      */
     public function getTable()
     {
+        if (!function_exists('app')) {
+            return 'runtime_config';
+        }
         return app('config')->get('runtimeconfig.storage.table') ?? 'runtime_config';
     }
 
@@ -23,6 +26,9 @@ trait BindsDynamically
      */
     public function getConnectionName()
     {
+        if (!function_exists('app')) {
+            return null;
+        }
         return app('config')->get('runtimeconfig.storage.connection');
     }
 }

@@ -19,16 +19,21 @@
         "issues": "https://github.com/knightar/laravel-config/issues"
     },
     "require": {
-        "illuminate/support": "^5.2",
-        "illuminate/contracts": "^5.2"
+        "laravel/framework": "^5.2"
     },
     "require-dev": {
-        "php" : ">=5.5.9",
-        "phpunit/phpunit": "^4.0"
+        "php" : "^7.1.0",
+        "phpunit/phpunit": "~7.0",
+        "orchestra/testbench": "^3.8.4"
     },
     "autoload": {
         "psr-4": {
             "KnightAR\\Laravel\\Config\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KnightAR\\Laravel\\Config\\Tests\\": "tests/"
         }
     },
     "scripts": {

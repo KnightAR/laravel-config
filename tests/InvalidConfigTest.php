@@ -1,24 +1,26 @@
 <?php
 
+namespace KnightAR\Laravel\Config\Tests;
+
 use KnightAR\Laravel\Config\Config;
 
 /**
  * Tests to ensure invalid data is not allowed into the config (data that can't be persisted)
  */
-class InvalidConfigTest extends PHPUnit_Framework_TestCase
+class InvalidConfigTest extends TestCase
 {
     public function testNullData()
     {
         // invalid data
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         new Config(null);
 
     }
 
     public function testNonScalarData()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
-        new Config(new stdClass);
+        $this->expectException(\InvalidArgumentException::class);
+        new Config(new \stdClass);
     }
 
     /**
@@ -27,8 +29,8 @@ class InvalidConfigTest extends PHPUnit_Framework_TestCase
     public function testNonScalarValue()
     {
         $cfg = new Config();
-        $this->setExpectedException(InvalidArgumentException::class);
-        $cfg->set('newkey', new stdClass);
+        $this->expectException(\InvalidArgumentException::class);
+        $cfg->set('newkey', new \stdClass);
     }
 
     /**
@@ -37,21 +39,21 @@ class InvalidConfigTest extends PHPUnit_Framework_TestCase
     public function testArrayNonScalar()
     {
         $cfg = new Config();
-        $this->setExpectedException(InvalidArgumentException::class);
-        $cfg->set('newkey', [new stdClass]);
+        $this->expectException(\InvalidArgumentException::class);
+        $cfg->set('newkey', [new \stdClass]);
     }
 
     public function testMultiDimentionalArrays()
     {
         $cfg = new Config();
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $cfg->set('newkey', [['string']]);
     }
 
     public function testAssocArray()
     {
         $cfg = new Config();
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $cfg->set('newkey', ['key' => 'value']);
     }
 }

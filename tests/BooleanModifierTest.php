@@ -1,14 +1,17 @@
 <?php
 
+namespace KnightAR\Laravel\Config\Tests;
+
 use KnightAR\Laravel\Config\Config;
 use KnightAR\Laravel\Config\Modifiers\Boolean;
 
-class BooleanModifierTest extends PHPUnit_Framework_TestCase
+class BooleanModifierTest extends TestCase
 {
     private $cfg;
 
-    public function setUp()
+    public function setUp(): void
     {
+        parent::setUp();
         $this->cfg = new Config();
         $this->cfg->modifiers->push(new Boolean);
     }

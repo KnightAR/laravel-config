@@ -59,8 +59,8 @@ class Config implements Repository
     public function __construct($data = [], Arr $arrHelper = null)
     {
         //Make a copy of the untouched config before we continue
-        if (is_null(self::$config)) {
-            self::$config = new \Illuminate\Config\Repository(app('config')->all());
+        if (is_null(self::$config) && function_exists('app')) {
+            self::$config = app('config')->all();
         }
 
         $this->setArrHelper($arrHelper);

@@ -74,7 +74,7 @@ class Eloquent implements StorageInterface
     public function load()
     {
         $results = [];
-        foreach ($this->model::all() as $row) {
+        foreach ($this->model::where('id', '>', 0)->get() as $row) {
             $results[$row->key] = $row->value;
         }
         return $results;

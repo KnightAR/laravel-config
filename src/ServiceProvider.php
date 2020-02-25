@@ -34,6 +34,8 @@ class ServiceProvider extends BaseServiceProvider
             __DIR__.'/migrations/' => database_path('migrations'),
         ], 'migrations');
 
+        $this->loadMigrationsFrom(__DIR__ . '/migrations');
+
         try {
             foreach (app('config-runtime')->all() as $parent => $values) {
                 $this->mergeAndOverwriteConfigFromArray($parent, $values);
@@ -132,8 +134,9 @@ class ServiceProvider extends BaseServiceProvider
     /**
      * Get an instance of a custom defined storage engine
      *
-     * @param  LaravelConfig $config [description]
+     * @param LaravelConfig $config [description]
      * @return StorageInterface
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function selectStorageCustom($config)
     {
@@ -157,7 +160,7 @@ class ServiceProvider extends BaseServiceProvider
      * Get an instance of the File storage engine
      *
      * @param  LaravelConfig $config
-     * @return File
+     * @return Eloquent
      */
     protected function selectStorageEloquent($config)
     {
